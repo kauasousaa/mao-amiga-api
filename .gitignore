@@ -28,3 +28,12 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Maven ###
+target/
+
+### H2 ###
+data/
+
+### Logs ###
+*.log
