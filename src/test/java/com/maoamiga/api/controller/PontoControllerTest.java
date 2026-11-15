@@ -16,6 +16,7 @@ import java.util.UUID;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -71,7 +72,7 @@ class PontoControllerTest {
         cargaInicialPontos.carregarSeVazio();
 
         org.junit.jupiter.api.Assertions.assertEquals(antes, pontoRepository.count());
-        org.junit.jupiter.api.Assertions.assertTrue(antes >= 8);
+        org.junit.jupiter.api.Assertions.assertTrue(antes >= 25);
     }
 
     @Test
@@ -208,5 +209,41 @@ class PontoControllerTest {
                 .andExpect(jsonPath("$.erro").value("tipo deve ser 'coleta' ou 'distribuição'"));
 
         org.junit.jupiter.api.Assertions.assertEquals(antes, pontoRepository.count());
+    }
+
+    @Test
+    void filtraPontosComPaginacao() throws Exception {
+        mockMvc.perform(get(PONTOS + "/filtro"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(10)))
+                .andExpect(jsonPath("$.content[0].nome").value("Centro de Distribuição Campinas"))
+                .andExpect(jsonPath("$.page.size").value(10))
+                .andExpect(jsonPath("$.page.number").value(0))
+                .andExpect(jsonPath("$.page.totalElements", greaterThanOrEqualTo(25)));
+
+        mockMvc.perform(get(PONTOS + "/filtro").param("sort", "bairro,asc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].bairro").value("Campinas"))
+                .andExpect(jsonPath("$.content[1].bairro").value("Campus Samambaia"));
+
+        mockMvc.perform(get(PONTOS + "/filtro").param("filtro", "BuEnO"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(3)))
+                .andExpect(jsonPath("$.content[0].nome").value("Ponto Parque Vaca Brava"))
+                .andExpect(jsonPath("$.content[0].bairro").value("Setor Bueno"))
+                .andExpect(jsonPath("$.content[1].bairro").value("Setor Bueno"))
+                .andExpect(jsonPath("$.content[2].bairro").value("Setor Bueno"));
+
+        mockMvc.perform(get(PONTOS + "/filtro").param("filtro", "vaca"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].nome").value("Ponto Parque Vaca Brava"));
+
+        mockMvc.perform(get(PONTOS + "/filtro").param("page", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(10)))
+                .andExpect(jsonPath("$.page.number").value(1))
+                .andExpect(jsonPath("$.page.size").value(10))
+                .andExpect(jsonPath("$.content[0].nome").value(not("Centro de Distribuição Campinas")));
     }
 }

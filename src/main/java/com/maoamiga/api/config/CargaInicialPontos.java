@@ -22,10 +22,12 @@ public class CargaInicialPontos implements ApplicationRunner {
     }
 
     public void carregarSeVazio() {
-        if (pontoRepository.count() > 0) {
-            return;
+        List<Ponto> faltantes = pontosDeGoiania().stream()
+                .filter(ponto -> !pontoRepository.existsByNome(ponto.getNome()))
+                .toList();
+        if (!faltantes.isEmpty()) {
+            pontoRepository.saveAll(faltantes);
         }
-        pontoRepository.saveAll(pontosDeGoiania());
     }
 
     private List<Ponto> pontosDeGoiania() {
@@ -39,7 +41,23 @@ public class CargaInicialPontos implements ApplicationRunner {
                 ponto("Ponto UFG Samambaia", "Avenida Esperança, s/n, Goiânia - GO", "Campus Samambaia", "Seg a Sex, 9h às 17h", TipoPonto.COLETA),
                 ponto("Ponto Parque Areião", "Avenida Ricardo Paranhos, s/n, Goiânia - GO", "Setor Pedro Ludovico", "Ter a Sáb, 8h às 16h", TipoPonto.DISTRIBUICAO),
                 ponto("Ponto Terminal Praça da Bíblia", "Praça da Bíblia, s/n, Goiânia - GO", "Setor Leste Universitário", "Seg a Sex, 7h às 19h", TipoPonto.COLETA),
-                ponto("Ponto Shopping Flamboyant", "Avenida Jamel Cecílio, nº 3300, Goiânia - GO", "Jardim Goiás", "Seg a Sáb, 10h às 22h", TipoPonto.DISTRIBUICAO)
+                ponto("Ponto Shopping Flamboyant", "Avenida Jamel Cecílio, nº 3300, Goiânia - GO", "Jardim Goiás", "Seg a Sáb, 10h às 22h", TipoPonto.DISTRIBUICAO),
+                ponto("Ponto Bosque dos Buritis", "Avenida Assis Chateaubriand, s/n, Goiânia - GO", "Setor Oeste", "Seg a Dom, 6h às 18h", TipoPonto.COLETA),
+                ponto("Ponto Lago das Rosas", "Rua 2, s/n, Goiânia - GO", "Setor Oeste", "Seg a Sex, 8h às 17h", TipoPonto.COLETA),
+                ponto("Ponto Shopping Bougainville", "Avenida T-10, nº 1300, Goiânia - GO", "Setor Bueno", "Seg a Sáb, 10h às 22h", TipoPonto.DISTRIBUICAO),
+                ponto("Ponto Mutirama", "Avenida Contorno, s/n, Goiânia - GO", "Setor Central", "Ter a Dom, 9h às 17h", TipoPonto.COLETA),
+                ponto("Ponto Mercado Central", "Avenida Paranaíba, s/n, Goiânia - GO", "Setor Central", "Seg a Sáb, 7h às 18h", TipoPonto.DISTRIBUICAO),
+                ponto("Ponto Serra Dourada", "Avenida Fued José Sebba, s/n, Goiânia - GO", "Jardim Goiás", "Seg a Sex, 8h às 17h", TipoPonto.COLETA),
+                ponto("Ponto Teatro Goiânia", "Avenida Tocantins, s/n, Goiânia - GO", "Setor Central", "Seg a Sex, 9h às 21h", TipoPonto.COLETA),
+                ponto("Ponto Assembleia Legislativa", "Avenida Olinda, s/n, Goiânia - GO", "Setor Pedro Ludovico", "Seg a Sex, 8h às 18h", TipoPonto.COLETA),
+                ponto("Ponto Hospital das Clínicas", "Primeira Avenida, s/n, Goiânia - GO", "Setor Leste Universitário", "Todos os dias, 24h", TipoPonto.DISTRIBUICAO),
+                ponto("Ponto Praça do Sol", "Avenida T-63, s/n, Goiânia - GO", "Setor Bueno", "Seg a Sáb, 8h às 18h", TipoPonto.COLETA),
+                ponto("Ponto Jardim América", "Rua C-200, nº 40, Goiânia - GO", "Jardim América", "Seg a Sex, 8h às 17h", TipoPonto.DISTRIBUICAO),
+                ponto("Ponto Setor Coimbra", "Avenida Perimetral Norte, nº 500, Goiânia - GO", "Setor Coimbra", "Seg a Sex, 8h às 17h", TipoPonto.COLETA),
+                ponto("Ponto Parque Cascavel", "Rua 90, s/n, Goiânia - GO", "Setor Sul", "Seg a Dom, 8h às 18h", TipoPonto.COLETA),
+                ponto("Ponto Oscar Niemeyer", "Avenida Deputado Jamel Cecílio, s/n, Goiânia - GO", "Jardim Goiás", "Ter a Dom, 9h às 18h", TipoPonto.DISTRIBUICAO),
+                ponto("Ponto Terminal Isidória", "Avenida L, s/n, Goiânia - GO", "Jardim Novo Mundo", "Seg a Sex, 6h às 20h", TipoPonto.COLETA),
+                ponto("Ponto Cidade Jardim", "Avenida C-107, nº 200, Goiânia - GO", "Cidade Jardim", "Seg a Sex, 8h às 17h", TipoPonto.COLETA)
         );
     }
 

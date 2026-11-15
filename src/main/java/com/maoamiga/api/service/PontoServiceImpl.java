@@ -6,6 +6,8 @@ import com.maoamiga.api.entity.Ponto;
 import com.maoamiga.api.exception.PontoNaoEncontradoException;
 import com.maoamiga.api.repository.PontoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,16 @@ public class PontoServiceImpl implements PontoService {
         return pontoRepository.findAllByOrderByNomeAsc().stream()
                 .map(PontoResponseDTO::from)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PontoResponseDTO> filtrar(String filtro, Pageable pageable) {
+        String termo = filtro == null ? "" : filtro.trim();
+        Page<Ponto> pagina = termo.isEmpty()
+                ? pontoRepository.findAll(pageable)
+                : pontoRepository.buscarPorNomeOuBairro(termo, pageable);
+        return pagina.map(PontoResponseDTO::from);
     }
 
     @Override
