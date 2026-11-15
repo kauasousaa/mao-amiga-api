@@ -1,6 +1,6 @@
 # Instituto Mão Amiga API
 
-API Spring Boot do Instituto Mão Amiga. A N2-1 entrega o CRUD de pontos e a N2-2 a busca paginada.
+API Spring Boot do Instituto Mão Amiga. A N2-1 entrega o CRUD de pontos, a N2-2 a busca paginada e a N2-5 o CRUD de doações.
 
 ## Como rodar
 
@@ -336,3 +336,77 @@ A exclusão responde sem corpo.
   }
 }
 ```
+
+## Doações
+
+`criadoEm` é preenchido no cadastro com a data e hora do servidor. O corpo da requisição não envia esse campo, e a edição não altera o valor gravado.
+
+| Método | URL | Sucesso |
+| --- | --- | --- |
+| GET | http://localhost:8080/api/v1/doacoes/filtro?filtro=&page=0&size=10 | 200, página de doações. Sem `filtro`, devolve todas. Padrão: 10 itens, da mais nova para a mais antiga |
+| GET | http://localhost:8080/api/v1/doacoes/{id} | 200, uma doação. Id inexistente: 404 |
+| POST | http://localhost:8080/api/v1/doacoes | 201, doação criada |
+| PUT | http://localhost:8080/api/v1/doacoes/{id} | 200, doação atualizada. Id inexistente: 404 |
+| DELETE | http://localhost:8080/api/v1/doacoes/{id} | 204, sem corpo |
+
+`@CrossOrigin` está liberado no controller.
+
+Corpo do POST e do PUT:
+
+```json
+{
+  "tipoItem": "Roupa",
+  "quantidade": 4,
+  "pontoDestino": "Instituto Mão Amiga - Sede"
+}
+```
+
+`tipoItem` e `pontoDestino` são obrigatórios. `quantidade` é obrigatória e maior que zero. Quantidade zero, negativa ou tipo vazio responde **400** e não grava nada.
+
+A resposta de sucesso é um `DoacaoResponseDTO`:
+
+```json
+{
+  "id": "uuid",
+  "tipoItem": "Roupa",
+  "quantidade": 4,
+  "pontoDestino": "Instituto Mão Amiga - Sede",
+  "criadoEm": "2026-11-15T15:47:40.821969"
+}
+```
+
+O filtro procura no tipo do item, sem diferenciar maiúsculas.
+
+### GET /api/v1/doacoes/filtro — 200
+
+![Página de doações](docs/swagger/doacao-get-filtro.png)
+
+### GET /api/v1/doacoes/{id} — 200
+
+![Doação encontrada](docs/swagger/doacao-get-id.png)
+
+### GET /api/v1/doacoes/{id} — 404
+
+![Doação não encontrada no GET](docs/swagger/doacao-get-404.png)
+
+### POST /api/v1/doacoes — 201
+
+![Doação cadastrada](docs/swagger/doacao-post-201.png)
+
+### POST /api/v1/doacoes — 400
+
+![Cadastro de doação recusado](docs/swagger/doacao-post-400.png)
+
+### PUT /api/v1/doacoes/{id} — 200
+
+![Doação atualizada](docs/swagger/doacao-put-200.png)
+
+### PUT /api/v1/doacoes/{id} — 404
+
+![Doação não encontrada no PUT](docs/swagger/doacao-put-404.png)
+
+### DELETE /api/v1/doacoes/{id} — 204
+
+A exclusão responde sem corpo.
+
+![Doação excluída](docs/swagger/doacao-delete-204.png)

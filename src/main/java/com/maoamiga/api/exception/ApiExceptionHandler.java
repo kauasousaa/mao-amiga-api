@@ -17,6 +17,15 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(PontoNaoEncontradoException.class)
     public ResponseEntity<ErroResponse> pontoNaoEncontrado(PontoNaoEncontradoException ex) {
+        return naoEncontrado(ex);
+    }
+
+    @ExceptionHandler(DoacaoNaoEncontradaException.class)
+    public ResponseEntity<ErroResponse> doacaoNaoEncontrada(DoacaoNaoEncontradaException ex) {
+        return naoEncontrado(ex);
+    }
+
+    private ResponseEntity<ErroResponse> naoEncontrado(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErroResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
     }

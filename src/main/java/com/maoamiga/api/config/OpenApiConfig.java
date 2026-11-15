@@ -12,7 +12,7 @@ public class OpenApiConfig {
     public OpenAPI maoAmigaOpenAPI() {
         return new OpenAPI().info(new Info()
                 .title("Instituto Mão Amiga API")
-                .description("CRUD de pontos de coleta e distribuição em Goiânia.")
+                .description("CRUD de pontos de coleta e distribuição em Goiânia e de doações.")
                 .version("v1"));
     }
 }
